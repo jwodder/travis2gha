@@ -21,6 +21,12 @@ def main():
 
 @main.command()
 @click.option(
+    '--no-pytest-cov',
+    is_flag=True,
+    help="Indicates that passing `--cov-report=xml` to the tox run is not an"
+         " option and that the XML coverage must be generated externally",
+)
+@click.option(
     '--testenv',
     nargs=2,
     multiple=True,
@@ -28,7 +34,7 @@ def main():
     help="Configure the generated workflow to also run `tox -e NAME` against"
          " Python version `PYVER`.  Can be specified multiple times.",
 )
-def run(testenv):
+def run(testenv, no_pytest_cov):
     """
     Create a workflow, update the README badge, populate secrets, and delete
     .travis.yml
@@ -41,7 +47,9 @@ def run(testenv):
     wfdir = Path(".github", "workflows")
     wfdir.mkdir(parents=True, exist_ok=True)
     log.info("Creating .github/workflows/test.yml from template ...")
-    (wfdir / "test.yml").write_text(core.template_action(python_versions, testenv))
+    (wfdir / "test.yml").write_text(
+        core.template_action(python_versions, testenv, no_pytest_cov)
+    )
     log.info("Updating CI badge in README.rst ...")
     readmepath = Path("README.rst")
     readmepath.write_text(core.update_ci_badge(readmepath.read_text(), repo))
@@ -49,6 +57,12 @@ def run(testenv):
     Path(".travis.yml").unlink(missing_ok=True)
 
 @main.command()
+@click.option(
+    '--no-pytest-cov',
+    is_flag=True,
+    help="Indicates that passing `--cov-report=xml` to the tox run is not an"
+         " option and that the XML coverage must be generated externally",
+)
 @click.option(
     '-o', '--outfile',
     type=click.File("w"),
@@ -63,11 +77,15 @@ def run(testenv):
     help="Configure the generated workflow to also run `tox -e NAME` against"
          " Python version `PYVER`.  Can be specified multiple times.",
 )
-def workflow(testenv, outfile):
+def workflow(testenv, no_pytest_cov, outfile):
     """ Output a GitHub Actions workflow for the current repository """
     python_versions = core.get_python_versions()
     #log.info("Detected supported Python versions: %s", ", ".join(python_versions))
-    print(core.template_action(python_versions, testenv), end='', file=outfile)
+    print(
+        core.template_action(python_versions, testenv, no_pytest_cov),
+        end='',
+        file=outfile,
+    )
 
 @main.command()
 @click.option(

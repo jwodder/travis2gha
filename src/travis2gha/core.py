@@ -16,7 +16,7 @@ TRAVIS_BADGE_RGX = re.compile(
     r'^\s*\.\. image::\s*https?://travis-ci\.(?:com|org)/[^/]+/[^/]+\.svg'
 )
 
-def template_action(python_versions, extra_testenvs):
+def template_action(python_versions, extra_testenvs, no_pytest_cov=False):
     jenv = jinja2.Environment(
         loader        = jinja2.PackageLoader("travis2gha", "templates"),
         trim_blocks   = True,
@@ -26,6 +26,7 @@ def template_action(python_versions, extra_testenvs):
     return jenv.get_template("test.yml.j2").render(
         python_versions = python_versions,
         extra_testenvs  = extra_testenvs,
+        no_pytest_cov   = no_pytest_cov,
     ).rstrip() + "\n"
 
 def mksecrets(repo: GHRepo, secretsfile: TextIO) -> None:

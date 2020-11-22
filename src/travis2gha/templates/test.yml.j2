@@ -36,9 +36,26 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip wheel
+          {% if no_pytest_cov %}
+          python -m pip install --upgrade --upgrade-strategy=eager coverage tox
+          {% else %}
           python -m pip install --upgrade --upgrade-strategy=eager tox
+          {% endif %}
 
-      {% if extra_testenvs %}
+      {% if no_pytest_cov %}
+      - name: Run tests
+        {% if extra_testenvs %}
+        run: tox -e ${{ '{{' }} matrix.toxenv }}
+        {% else %}
+        run: tox -e py
+        {% endif %}
+
+      - name: Generate XML coverage report
+        {% if extra_testenvs %}
+        if: matrix.toxenv == 'py'
+        {% endif %}
+        run: coverage xml
+      {% elif extra_testenvs %}
       - name: Run tests with coverage
         if: matrix.toxenv == 'py'
         run: tox -e py -- --cov-report=xml
@@ -46,20 +63,17 @@ jobs:
       - name: Run generic tests
         if: matrix.toxenv != 'py'
         run: tox -e ${{ '{{' }} matrix.toxenv }}
-
-      - name: Upload coverage to Codecov
-        if: matrix.toxenv == 'py'
-        uses: codecov/codecov-action@v1
-        with:
-          fail_ci_if_error: false
       {% else %}
       - name: Run tests
         run: tox -e py -- --cov-report=xml
+      {% endif %}
 
       - name: Upload coverage to Codecov
+        {% if extra_testenvs %}
+        if: matrix.toxenv == 'py'
+        {% endif %}
         uses: codecov/codecov-action@v1
         with:
           fail_ci_if_error: false
-      {% endif %}
 
 # vim:set et sts=2:
