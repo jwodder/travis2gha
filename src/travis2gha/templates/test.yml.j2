@@ -16,6 +16,14 @@ jobs:
           {% for v in python_versions %}
           - '{{v}}'
           {% endfor %}
+        {% if extra_testenvs %}
+        toxenv: [py]
+        include:
+        {% for testenv, pyver in extra_testenvs %}
+          - python-version: '{{pyver}}'
+            toxenv: {{testenv}}
+        {% endfor %}
+        {% endif %}
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
@@ -30,13 +38,29 @@ jobs:
           python -m pip install --upgrade pip wheel
           python -m pip install --upgrade --upgrade-strategy=eager tox
 
+      {% if extra_testenvs %}
+      - name: Run tests with coverage
+        if: matrix.toxenv == 'py'
+        run: tox -e py -- --cov-report=xml
+
+      - name: Run generic tests
+        if: matrix.toxenv != 'py'
+        run: tox -e ${{ '{{' }} matrix.toxenv }}
+
+      - name: Upload coverage to Codecov
+        if: matrix.toxenv == 'py'
+        uses: codecov/codecov-action@v1
+        with:
+          fail_ci_if_error: false
+      {% else %}
       - name: Run tests
         run: tox -e py -- --cov-report=xml
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
-            fail_ci_if_error: false
+          fail_ci_if_error: false
+      {% endif %}
 
       - name: Send e-mail on failed scheduled run
         if: "failure() && github.event_name == 'schedule'"
@@ -48,7 +72,7 @@ jobs:
           password: ${{ '{{' }} secrets.NOTIFY_SMTP_PASSWORD }}
           from: GitHub Actions Notifications
           to: ${{ '{{' }} secrets.NOTIFY_RECIPIENT }}
-          subject: [${{ '{{' }} github.repository }}] Scheduled run of "${{ '{{' }} github.workflow }}" failed!
+          subject: '[${{ '{{' }} github.repository }}] Scheduled run of "${{ '{{' }} github.workflow }}" failed!'
           body: |
             A scheduled run of the "${{ '{{' }} github.workflow }}" workflow on ${{ '{{' }} github.repository }} failed!
 
