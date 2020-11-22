@@ -32,7 +32,7 @@ class GHRepo:
 
 def parse_github_remote(url: str) -> GHRepo:
     if m := GITHUB_REMOTE_RGX.fullmatch(url):
-        return GHRepo(owner=m["owner"], name=m["repo"])
+        return GHRepo(owner=m["owner"], name=m["name"])
     else:
         raise ValueError(f"Invalid GitHub remote URL: {url!r}")
 
