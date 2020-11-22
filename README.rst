@@ -68,7 +68,8 @@ Options
                         ``travis2gha run --help`` to see the default location
                         of this file for your system.
 
---testenv NAME PYVER    Configure the generated workflow to also run ``tox -e
+--testenv NAME_PYVER    [Specify ``NAME`` and ``PYVER`` as separate arguments]
+                        Configure the generated workflow to also run ``tox -e
                         NAME`` against Python version ``PYVER``.  This option
                         can be specified multiple times.
 
@@ -89,7 +90,8 @@ Options
 -o, --outfile FILE      Save the workflow to the given file.  By default, the
                         workflow is printed to standard output.
 
---testenv NAME PYVER    Configure the generated workflow to also run ``tox -e
+--testenv NAME_PYVER    [Specify ``NAME`` and ``PYVER`` as separate arguments]
+                        Configure the generated workflow to also run ``tox -e
                         NAME`` against Python version ``PYVER``.  This option
                         can be specified multiple times.
 
