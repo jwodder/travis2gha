@@ -5,7 +5,7 @@ import click
 from   .          import core
 from   .localrepo import get_local_repo
 
-APPDIRS = AppDirs('habits', 'jwodder')
+APPDIRS = AppDirs('travis2gha', 'jwodder')
 DEFAULT_SECRETS_FILE = os.path.join(APPDIRS.user_config_dir, "secrets.cfg")
 
 @click.group()
