@@ -4,7 +4,8 @@ import re
 import subprocess
 from   typing      import Optional, Union
 
-AnyPath = Union[str, bytes, PathLike[str], PathLike[bytes]]
+#AnyPath = Union[str, bytes, PathLike[str], PathLike[bytes]]
+AnyPath = Union[str, bytes, PathLike]
 
 GITHUB_REMOTE_RGX = re.compile(r'''
     (?:
