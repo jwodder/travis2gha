@@ -16,7 +16,6 @@ jobs:
           {% for v in python_versions %}
           - '{{v}}'
           {% endfor %}
-          - pypy3
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
