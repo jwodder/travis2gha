@@ -42,16 +42,16 @@ jobs:
         if: "failure() && github.event_name == 'schedule'"
         uses: dawidd6/action-send-mail@v2
         with:
-          server_address: ${{ secrets.NOTIFY_SMTP_HOST }}
-          server_port: ${{ secrets.NOTIFY_SMTP_PORT }}
-          username: ${{ secrets.NOTIFY_SMTP_USERNAME }}
-          password: ${{ secrets.NOTIFY_SMTP_PASSWORD }}
+          server_address: ${{ '{{' }} secrets.NOTIFY_SMTP_HOST }}
+          server_port: ${{ '{{' }} secrets.NOTIFY_SMTP_PORT }}
+          username: ${{ '{{' }} secrets.NOTIFY_SMTP_USERNAME }}
+          password: ${{ '{{' }} secrets.NOTIFY_SMTP_PASSWORD }}
           from: GitHub Actions Notifications
-          to: ${{ secrets.NOTIFY_RECIPIENT }}
-          subject: [${{ github.repository }}] Scheduled run of "${{ github.workflow }}" failed!
+          to: ${{ '{{' }} secrets.NOTIFY_RECIPIENT }}
+          subject: [${{ '{{' }} github.repository }}] Scheduled run of "${{ '{{' }} github.workflow }}" failed!
           body: |
-            A scheduled run of the "${{ github.workflow }}" workflow on ${{ github.repository }} failed!
+            A scheduled run of the "${{ '{{' }} github.workflow }}" workflow on ${{ '{{' }} github.repository }} failed!
 
-            See <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}> for more information.
+            See <https://github.com/${{ '{{' }} github.repository }}/actions/runs/${{ '{{' }} github.run_id }}> for more information.
 
 # vim:set et sts=2:
