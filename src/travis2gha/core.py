@@ -1,5 +1,6 @@
 from   base64            import b64encode
 from   configparser      import ConfigParser
+import logging
 import re
 from   typing            import Iterable, List, TextIO
 from   urllib.parse      import quote
@@ -8,6 +9,8 @@ from   nacl              import encoding, public
 from   setuptools.config import read_configuration
 from   .gh               import GitHub
 from   .localrepo        import GHRepo
+
+log = logging.getLogger(__name__)
 
 TRAVIS_BADGE_RGX = re.compile(
     r'^\s*\.\. image::\s*https?://travis-ci\.(?:com|org)/[^/]+/[^/]+\.svg'
@@ -36,6 +39,7 @@ def mksecrets(repo: GHRepo, secretsfile: TextIO) -> None:
     secrets = gh.repos[repo.owner][repo.name].actions.secrets
     pubkey = secrets["public-key"].get()  # Has "key" and "key_id" fields
     for name, value in cfg.items("secrets"):
+        log.info("Creating secret %r ...", name)
         secrets[name].put(json={
             "encrypted_value": encrypt_secret(pubkey["key"], value),
             "key_id": pubkey["key_id"],
