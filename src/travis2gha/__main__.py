@@ -15,13 +15,6 @@ def main():
 
 @main.command()
 @click.option(
-    '-S', '--secrets', 'secretsfile',
-    type=click.File(),
-    default=DEFAULT_SECRETS_FILE,
-    help="INI file containing [auth]token and [secrets] sections",
-    show_default=True,
-)
-@click.option(
     '--testenv',
     nargs=2,
     multiple=True,
@@ -29,7 +22,7 @@ def main():
     help="Configure the generated workflow to also run `tox -e NAME` against"
          " Python version `PYVER`.  Can be specified multiple times.",
 )
-def run(secretsfile, testenv):
+def run(testenv):
     """
     Create a workflow, update the README badge, populate secrets, and delete
     .travis.yml
@@ -41,7 +34,6 @@ def run(secretsfile, testenv):
     (wfdir / "test.yml").write_text(core.template_action(python_versions, testenv))
     readmepath = Path("README.rst")
     readmepath.write_text(core.update_ci_badge(readmepath.read_text(), repo))
-    core.mksecrets(repo, secretsfile)
     Path(".travis.yml").unlink(missing_ok=True)
 
 @main.command()

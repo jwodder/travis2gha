@@ -19,17 +19,12 @@ following tasks:
   py`` against an array of Python versions (determined automatically from the
   Python project's classifiers) with coverage stats uploaded to Codecov, along
   with running zero or more custom tox testenvs (without coverage) against
-  specific Python versions as specified on the command line.  In addition, the
-  workflow is configured to run once a day (in addition to on pushes & pull
-  requests) and automatically sends e-mail notifications whenever a scheduled
-  run fails (something that's currently lacking from GitHub Actions' built-in
-  features).
+  specific Python versions as specified on the command line.  The workflow is
+  configured to run on pushes, on pull requests, and once a day in the middle
+  of the night.
 
 - Replace the Travis status badge in ``README.rst`` with a GitHub Actions
   status badge
-
-- Create specified workflow secrets (used by the workflow's e-mail action) in
-  the GitHub repository
 
 - Delete ``.travis.yml``
 
@@ -62,11 +57,6 @@ Perform all of the steps listed above.
 
 Options
 ```````
-
--S, --secrets FILE      INI file containing [auth]token and [secrets] sections.
-                        See `Secrets File`_ below for more information.  Run
-                        ``travis2gha run --help`` to see the default location
-                        of this file for your system.
 
 --testenv NAME_PYVER    [Specify ``NAME`` and ``PYVER`` as separate arguments]
                         Configure the generated workflow to also run ``tox -e
@@ -103,23 +93,12 @@ Options
 
     travis2gha secrets [<options>]
 
-Create specified workflow secrets in the GitHub repository.
+Create specified workflow secrets in the GitHub repository.  This was used in a
+previous version of this package until I realized that the workflow step it was
+enabling was redundant.  However, the command remains for future reference.
 
-Options
-```````
-
--S, --secrets FILE      INI file containing [auth]token and [secrets] sections.
-                        See `Secrets File`_ below for more information.  Run
-                        ``travis2gha secrets --help`` to see the default
-                        location of this file for your system.
-
-
-Secrets File
-------------
-
-The ``run`` and ``secrets`` commands rely on a secrets file for creating
-secrets in a repository.  This file is an INI format file containing the
-following sections:
+This command relies on a secrets file for creating secrets in a repository.
+This file is an INI format file containing the following sections:
 
 ``[auth]``
     Must contain a ``token`` option giving a GitHub OAuth token to use to set
@@ -128,3 +107,10 @@ following sections:
 ``[secrets]``
     Each option in this section specifies a secret to create with the given
     name & value.
+
+Options
+```````
+
+-S, --secrets FILE      INI file containing [auth]token and [secrets] sections.
+                        Run ``travis2gha secrets --help`` to see the default
+                        location of this file for your system.
