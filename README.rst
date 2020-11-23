@@ -1,7 +1,8 @@
-.. image:: http://www.repostatus.org/badges/latest/wip.svg
-    :target: http://www.repostatus.org/#wip
-    :alt: Project Status: WIP — Initial development is in progress, but there
-          has not yet been a stable, usable release suitable for the public.
+.. image:: https://www.repostatus.org/badges/latest/unsupported.svg
+    :target: https://www.repostatus.org/#unsupported
+    :alt: Project Status: Unsupported – The project has reached a stable,
+          usable state but the author(s) have ceased all work on it. A new
+          maintainer may be desired.
 
 .. image:: https://img.shields.io/github/license/jwodder/travis2gha.svg
     :target: https://opensource.org/licenses/MIT
